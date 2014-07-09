@@ -1,0 +1,35 @@
+<h1><a href="http://www.finitio.io/">Finitio</a> &mdash; <span class="blue">Data</span> Deserves a <span class="red">Language</span> Too</h1>
+<div class='row-fluid' full-height="-260">
+  <div class="col-md-6">
+    <div full-height="-260" ui-ace="{
+      useWrapMode : false,
+      showGutter: true,
+      theme:'clouds',
+      mode: 'ruby'
+    }" ng-model="schema"></div>
+  </div>
+  <div class="col-md-6">
+    <div full-height="-260" ui-ace="{
+      useWrapMode : false,
+      showGutter: true,
+      theme:'clouds',
+      mode: 'json'
+    }" ng-model="data"></div>
+  </div>
+</div>
+<div class='row-fluid'>
+  <div class="col-md-12">
+    <pre id="try-feedback"
+         ng-class="{ 'alert-success': status=='success', 'alert-danger': status=='error' }"
+         class="alert">{{message}}</pre>
+  </div>
+</div>
+<footer class='row-fluid'>
+  <div class="col-md-12">
+    <a href="http://www.finitio.io/">Finitio</a>
+    &mdash; &copy; <a href="http://twitter.com/blambeau">Bernard Lambeau</a>
+    &mdash; Developed for a demo at <a href="http://csvconf.com/">csv,conf</a>
+    &mdash; Berlin
+    &mdash; 15 July 2014
+  </div>
+</footer>
