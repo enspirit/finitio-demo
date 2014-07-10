@@ -1,32 +1,32 @@
 <header>
-<div class='row-fluid'>
-  <div class="col-md-12">
-    <div class="pull-left">
-      <nav class="navbar navbar-default" role="navigation">
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li ng-repeat="ex in examples | orderBy:'order'">
-                  <a ng-click="loadExample(ex.id)">{{ex.label}}</a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </nav>
-    </div>
-    <div class="pull-right">
-      <h1><a href="http://www.finitio.io/">Finitio</a> &mdash; <span class="blue">Data</span> Deserves a <span class="red">Language</span> Too</h1>
+  <div class='row-fluid'>
+    <div class="col-md-12">
+      <div class="pull-left">
+        <nav class="navbar navbar-default" role="navigation">
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li ng-repeat="ex in examples" ng-class="{ divider: ex.id=='separator'}">
+                    <a ng-click="loadExample(ex.id)">{{ex.label}}</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </nav>
+      </div>
+      <div class="pull-right">
+        <h1><a href="http://www.finitio.io/">Finitio</a> &mdash; <span class="blue">Data</span> Deserves a <span class="red">Language</span> Too</h1>
+      </div>
     </div>
   </div>
-</div>
 </header>
-<div class='row-fluid' full-height="-260">
+<div class='row-fluid' full-height="-300">
   <div class="col-md-6">
-    <div full-height="-260" ui-ace="{
+    <div full-height="-300" ui-ace="{
       useWrapMode : false,
       showGutter: true,
       theme:'clouds',
@@ -34,7 +34,7 @@
     }" ng-model="schema"></div>
   </div>
   <div class="col-md-6">
-    <div full-height="-260" ui-ace="{
+    <div full-height="-300" ui-ace="{
       useWrapMode : false,
       showGutter: true,
       theme:'clouds',
@@ -54,7 +54,6 @@
     <a href="http://www.finitio.io/">Finitio</a>
     &mdash; &copy; <a href="http://twitter.com/blambeau">Bernard Lambeau</a>
     &mdash; Developed for a demo at <a href="http://csvconf.com/">csv,conf</a>
-    &mdash; Berlin
-    &mdash; 15 July 2014
+    &mdash; Berlin, 15 July 2014
   </div>
 </footer>
