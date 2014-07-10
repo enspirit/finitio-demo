@@ -17,6 +17,7 @@ angular.module( 'finitio.demo', [
 })
 
 .controller( 'DemoCtrl', function DemoController( $scope ) {
+  $scope.mode = "validate";
   $scope.schema = "";
   $scope.data = "";
   $scope.status = "none";
@@ -103,15 +104,20 @@ angular.module( 'finitio.demo', [
 
   $scope.validate = function(){
     var schema = $scope.schema,
-        data   = $scope.data;
-    var system = null,
+        data   = $scope.data,
+        parsed = null,
+        system = null,
         coerced = null,
         jstype = null,
         constructor = null;
     try {
       system = Finitio.system(schema);
       try {
-        coerced = system.dress(JSON.parse(data));
+        parsed  = JSON.parse(data);
+        coerced = system.dress(parsed);
+        if ($scope.mode == 'validate'  && !system.resolve('Main').include(parsed)) {
+          throw new Error("Invalid value");
+        }
         $scope.status = "success";
         jstype = coerced && coerced.constructor;
         if (jstype) {
@@ -139,6 +145,7 @@ angular.module( 'finitio.demo', [
   };
 
   $scope.loadExample('hello');
+  $scope.$watch("mode", $scope.validate);
   $scope.$watch("schema", $scope.validate);
   $scope.$watch("data", $scope.validate);
 })

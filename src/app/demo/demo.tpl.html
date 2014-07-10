@@ -15,7 +15,17 @@
                 </ul>
               </li>
             </ul>
-          </div><!-- /.navbar-collapse -->
+            <form class="navbar-form navbar-left">
+              <div class="form-group">
+                <label class="radio-inline">
+                  <input ng-model="mode" type="radio" name="mode" value="validate"> validate
+                </label>
+                <label class="radio-inline">
+                  <input ng-model="mode" type="radio" name="mode" value="dress"> dress
+                </label>
+              </div>
+            </form>
+          </div>
         </nav>
       </div>
       <div class="pull-right">
