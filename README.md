@@ -6,7 +6,7 @@ a talk at [http://csvconf.com/](csv,conf 2014) held in Berlin.
 ## How to get started?
 
 ```
-git clone git://github.com/blambeai/finitio-demo
+git clone git://github.com/blambeau/finitio-demo
 cd finitio-demo
 sudo npm -g install grunt-cli karma bower
 npm install
