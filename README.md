@@ -11,6 +11,7 @@ cd finitio-demo
 sudo npm -g install grunt-cli karma bower
 npm install
 bower install
+grunt build
 grunt compile
 ```
 
