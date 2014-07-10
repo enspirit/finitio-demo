@@ -4,8 +4,8 @@ angular.module( 'fullHeight', [] )
   return function (scope, element) {
     function applyResizing() {
       var offset = element.attr("full-height") || (-25);
-      offset = parseInt(offset);
-      element.css("height", (parseInt($window.innerHeight) + offset) + "px");
+      offset = parseInt(offset, 10);
+      element.css("height", (parseInt($window.innerHeight, 10) + offset) + "px");
     }
     angular.element($window).bind('resize', function(){
       scope.$apply(function() { applyResizing(); });
