@@ -29,7 +29,7 @@ module.exports = {
       'vendor/angular-ui-router/release/angular-ui-router.js',
       'vendor/angular-ui-utils/modules/route/route.js',
       'vendor/angular-ui-ace/ui-ace.js',
-      'vendor/finitio/finitio.min.js',
+      'vendor/finitio.js/dist/finitio.min.js',
     ],
     css: [
     ],
