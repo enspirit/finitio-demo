@@ -17,10 +17,37 @@ angular.module( 'finitio.demo', [
 })
 
 .controller( 'DemoCtrl', function DemoController( $scope ) {
-  $scope.schema = "@import finitio/data\n\nInteger";
-  $scope.data = "12";
+  $scope.schema = "";
+  $scope.data = "";
   $scope.status = "none";
   $scope.error = "";
+
+  $scope.examples = [
+    {
+      id: "hello",
+      order: 0,
+      label: "Hello World!",
+      schema: ".",
+      data: '"Hello World"'
+    },
+    {
+      id: "basic",
+      order: 1,
+      label: "Basic",
+      schema: "@import finitio/data\n\nInteger",
+      data: "12"
+    }
+  ];
+
+  $scope.loadExample = function(id){
+    for (var i=0; i<$scope.examples.length; i++){
+      var ex = $scope.examples[i];
+      if (ex.id == id){
+        $scope.schema = ex.schema;
+        $scope.data = ex.data;
+      }
+    }
+  };
 
   $scope.validate = function(){
     var schema = $scope.schema,
@@ -56,9 +83,10 @@ angular.module( 'finitio.demo', [
       } else {
         $scope.message = ex.message;
       }
-    }    
+    }
   };
 
+  $scope.loadExample('hello');
   $scope.$watch("schema", $scope.validate);
   $scope.$watch("data", $scope.validate);
 })
