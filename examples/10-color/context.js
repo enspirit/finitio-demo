@@ -30,3 +30,5 @@ Color.prototype.toString = function(){
       b = this.triple[2];
   return "Color(" + r + "," + g + "," + b + ")";
 };
+
+module.exports = { Color: Color };

@@ -50,19 +50,21 @@ angular.module( 'finitio.demo', [
   $scope.systemMessage = "";
 
   // Compiles the system everytime the schema changes
-  $scope.$watch("example.schema", function(){
+  function compileSystem(){
     try {
       var schema = $scope.example.schema;
-      $scope.system = Finitio.system(schema, {JsTypes: { Color: Color }});
+      $scope.system = Finitio.system(schema, { JsTypes: $scope.context });
       $scope.main = $scope.system.resolve('Main');
       $scope.systemStatus = "success";
       $scope.systemMessage = "Finitio system ok.";
+      return true;
     } catch (ex) {
       $scope.system = null;
       $scope.systemStatus = "error";
       $scope.systemMessage = (ex.rootCause && ex.rootCause.message) || ex.message;
+      return false;
     }
-  });
+  }
 
   // current JSON data, when parsed
   $scope.data = null;
@@ -70,69 +72,107 @@ angular.module( 'finitio.demo', [
   $scope.dataMessage = "";
 
   // Parses the JSON data everytime the source changes
-  $scope.$watch("example.data", function(){
+  function compileData(){
     try {
       $scope.data = JSON.parse($scope.example.data);
       $scope.dataStatus = "success";
       $scope.dataMessage = "JSON data ok.";
+      return true;
     } catch (ex) {
       $scope.data = null;
       $scope.dataStatus = "error";
       $scope.dataMessage = ex.message;
+      return false;
     }
-  });
+  }
+
+  // Parses the context
+  $scope.context = {};
+  $scope.contextStatus = "error";
+  $scope.contextMessage = "";
+
+  // Parses and compiles the context
+  function compileContext(){
+    try {
+      var fn = new Function("module", $scope.example.context);
+      var module = { exports: {} };
+      fn(module);
+      console.log(fn);
+      console.log(module);
+      $scope.context = module.exports;
+      $scope.contextStatus = "success";
+      $scope.contextMessage = "Javascript context ok.";
+      return true;
+    } catch (ex) {
+      $scope.context = {};
+      $scope.contextStatus = "error";
+      $scope.contextMessage = ex.message;
+      return false;
+    }
+  }
 
   // Coerces data against main as soon as something changes
   $scope.dressed = null;
   $scope.dressedStatus = "error";
   $scope.dressedMessage = "";
 
+  // Dress data
   function dress(){
-    if ($scope.systemStatus == "error") {
+    try {
+      $scope.dressed = $scope.system.dress($scope.data);
+      $scope.dressedStatus = "success";
+      $scope.dressedMessage = pp($scope.dressed);
+      return true;
+    } catch (ex) {
+      $scope.dressed = null;
       $scope.dressedStatus = "error";
-      $scope.dressedMessage = $scope.systemMessage;
-    } else if ($scope.dataStatus == "error") {
-      $scope.dressedStatus = "error";
-      $scope.dressedMessage = $scope.dataMessage;
-    } else {
-      try {
-        $scope.dressed = $scope.system.dress($scope.data);
-        $scope.dressedStatus = "success";
-        $scope.dressedMessage = pp($scope.dressed);
-      } catch (ex) {
-        $scope.dressed = null;
-        $scope.dressedStatus = "error";
-        $scope.dressedMessage = (ex.explainTree && ex.explainTree()) || ex.message;
-      }
+      $scope.dressedMessage = (ex.explainTree && ex.explainTree()) || ex.message;
+      return false;
     }
   }
-  $scope.$watch("system", dress);
-  $scope.$watch("data", dress);
 
   // Validates data against system as soon as something changes
   $scope.validationStatus = "error";
   $scope.validationMessage = "";
 
   function validate(){
-    if ($scope.systemStatus == "error") {
-      $scope.validationStatus = "error";
-      $scope.validationMessage = $scope.systemMessage;
-    } else if ($scope.dataStatus == "error") {
-      $scope.validationStatus = "error";
-      $scope.validationMessage = $scope.dataMessage;
-    } else if ($scope.main.include($scope.data)) {
+    if ($scope.main.include($scope.data)) {
       $scope.validationStatus = "success";
-      $scope.validationMessage = "Value belongs to type.";
+      $scope.validationMessage = "Yes, `" + dataToString() + "` belongs to " + typeToString();
     } else if ($scope.dressedStatus == "error") {
       $scope.validationStatus = "error";
       $scope.validationMessage = $scope.dressedMessage;
     } else {
       $scope.validationStatus = "error";
-      $scope.validationMessage = "Invalid value for type.";
+      $scope.validationMessage = "Invalid value `" + dataToString() + "` for " + typeToString();
     }
   }
-  $scope.$watch("system", validate);
-  $scope.$watch("data", validate);
+
+  function run(){
+    if (!compileContext()){
+      $scope.validationStatus = $scope.dressedStatus = 'error';
+      $scope.validationMessage = $scope.dressedMessage = $scope.contextMessage;
+      return;
+    }
+
+    if (!compileSystem()){
+      $scope.validationStatus = $scope.dressedStatus = 'error';
+      $scope.validationMessage = $scope.dressedMessage = $scope.systemMessage;
+      return;
+    }
+
+    if (!compileData()){
+      $scope.validationStatus = $scope.dressedStatus = 'error';
+      $scope.validationMessage = $scope.dressedMessage = $scope.dataMessage;
+      return;
+    }
+
+    dress();
+    validate();
+  }
+  $scope.$watch("example.schema", run);
+  $scope.$watch("example.data", run);
+  $scope.$watch("example.context", run);
 
   function pp(object, depth, embedded) {
     if (typeof(depth) != "number") { depth = 0; }
@@ -195,7 +235,22 @@ angular.module( 'finitio.demo', [
     return ((newline ? "\n" + spacer(depth) : "") + pretty);
   }
 
-  $scope.loadExample('hello');
+  function dataToString() {
+    str = $scope.example.data
+      .replace(/\n/g, ' ')
+      .replace(/\s+/g, ' ')
+      .replace(/^\s+|\s+$/g, '');
+    if (str.length > 35) {
+      str = str.slice(0, 30) + " ...";
+    }
+    return str;
+  }
+
+  function typeToString() {
+    return $scope.main.trueOne().toString();
+  }
+
+  $scope.loadExample('everything');
 })
 
 ;
