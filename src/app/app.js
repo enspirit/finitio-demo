@@ -9,7 +9,14 @@ angular.module( 'finitio', [
   $urlRouterProvider.otherwise( '/demo' );
 })
 
-.run( function run($rootScope) {
+.run( function run() {
+})
+
+.factory('$exceptionHandler', function(){
+  return function (exception, cause) {
+    console.log("Exception handler");
+    console.log(exception);
+  };
 })
 
 .controller( 'AppCtrl', function AppCtrl () {
