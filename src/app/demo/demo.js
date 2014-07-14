@@ -18,13 +18,12 @@ angular.module( 'finitio.demo', [
 })
 
 .controller( 'DemoCtrl', function DemoController($scope, examples) {
-  $scope.state = 'finitio';
-  $scope.mode = "validate";
-  $scope.status = "none";
-  $scope.error = "";
+
+  // examples and currently selected one
   $scope.examples = examples;
   $scope.example = {};
 
+  // Loads the example at `id`
   $scope.loadExample = function(id){
     for (var i=0; i<$scope.examples.length; i++){
       var ex = $scope.examples[i];
@@ -34,52 +33,168 @@ angular.module( 'finitio.demo', [
     }
   };
 
-  $scope.validate = function(){
-    var schema = $scope.example.schema,
-        data   = $scope.example.data,
-        parsed = null,
-        system = null,
-        coerced = null,
-        jstype = null,
-        constructor = null;
+  // current state: finitio or javascript
+  $scope.state = 'finitio';
+
+  // current mode: validate or dress
+  $scope.mode = "validate";
+
+  // validation results
+  $scope.status = "none";
+  $scope.message = "";
+
+  // current Finitio system, when parsed
+  $scope.system = null;
+  $scope.main = null;
+  $scope.systemStatus = "error";
+  $scope.systemMessage = "";
+
+  // Compiles the system everytime the schema changes
+  $scope.$watch("example.schema", function(){
     try {
-      system = Finitio.system(schema, {JsTypes: { Color: Color }});
-      try {
-        parsed  = JSON.parse(data);
-        coerced = system.dress(parsed);
-        if ($scope.mode == 'validate'  && !system.resolve('Main').include(parsed)) {
-          throw new Error("Invalid value");
-        }
-        $scope.status = "success";
-        jstype = coerced && coerced.constructor;
-        if (jstype) {
-          jstype = jstype.name;
-        } else {
-          jstype = typeof(coerced);
-        }
-        $scope.message = "(js:" + jstype + ") " + coerced;
-      } catch (ex) {
-        $scope.status = "error";
-        if (ex.explainTree) {
-          $scope.message = ex.explainTree();
-        } else {
-          $scope.message = ex.message;
-        }
-      }
+      var schema = $scope.example.schema;
+      $scope.system = Finitio.system(schema, {JsTypes: { Color: Color }});
+      $scope.main = $scope.system.resolve('Main');
+      $scope.systemStatus = "success";
+      $scope.systemMessage = "Finitio system ok.";
     } catch (ex) {
-      $scope.status = "error";
-      if (ex.rootCause) {
-        $scope.message = ex.rootCause.message;
-      } else {
-        $scope.message = ex.message;
+      $scope.system = null;
+      $scope.systemStatus = "error";
+      $scope.systemMessage = (ex.rootCause && ex.rootCause.message) || ex.message;
+    }
+  });
+
+  // current JSON data, when parsed
+  $scope.data = null;
+  $scope.dataStatus = "error";
+  $scope.dataMessage = "";
+
+  // Parses the JSON data everytime the source changes
+  $scope.$watch("example.data", function(){
+    try {
+      $scope.data = JSON.parse($scope.example.data);
+      $scope.dataStatus = "success";
+      $scope.dataMessage = "JSON data ok.";
+    } catch (ex) {
+      $scope.data = null;
+      $scope.dataStatus = "error";
+      $scope.dataMessage = ex.message;
+    }
+  });
+
+  // Coerces data against main as soon as something changes
+  $scope.dressed = null;
+  $scope.dressedStatus = "error";
+  $scope.dressedMessage = "";
+
+  function dress(){
+    if ($scope.systemStatus == "error") {
+      $scope.validationStatus = "error";
+      $scope.validationMessage = $scope.systemMessage;
+    } else if ($scope.dataStatus == "error") {
+      $scope.validationStatus = "error";
+      $scope.validationMessage = $scope.dataMessage;
+    } else {
+      try {
+        $scope.dressed = $scope.system.dress($scope.data);
+        $scope.dressedStatus = "success";
+        $scope.dressedMessage = pp($scope.dressed);
+      } catch (ex) {
+        $scope.dressedStatus = "error";
+        $scope.dressedMessage = (ex.explainTree && ex.explainTree()) || ex.message;
       }
     }
-  };
+  }
+  $scope.$watch("system", dress);
+  $scope.$watch("data", dress);
+
+  // Validates data against system as soon as something changes
+  $scope.validationStatus = "error";
+  $scope.validationMessage = "";
+
+  function validate(){
+    if ($scope.systemStatus == "error") {
+      $scope.validationStatus = "error";
+      $scope.validationMessage = $scope.systemMessage;
+    } else if ($scope.dataStatus == "error") {
+      $scope.validationStatus = "error";
+      $scope.validationMessage = $scope.dataMessage;
+    } else if ($scope.main.include($scope.data)) {
+      $scope.validationStatus = "success";
+      $scope.validationMessage = "Value belongs to type.";
+    } else if ($scope.dressedStatus == "error") {
+      $scope.validationStatus = "error";
+      $scope.validationMessage = $scope.dressedMessage;
+    } else {
+      $scope.validationStatus = "error";
+      $scope.validationMessage = "Invalid value for type.";
+    }
+  }
+  $scope.$watch("system", validate);
+  $scope.$watch("data", validate);
+
+  function pp(object, depth, embedded) {
+    if (typeof(depth) != "number") { depth = 0; }
+    if (typeof(embedded) != "boolean"){ embedded = false; }
+    var newline = false;
+    var spacer = function(depth) {
+      var spaces = "";
+      for (var i=0;i<depth;i++) {
+        spaces += "  ";
+      }
+      return spaces;
+    };
+    var pretty = "";
+    var content = "";
+    if (typeof(object) == "undefined") {
+      pretty += "undefined";
+    }
+    else if (typeof(object) == "boolean" || typeof(object) == "number") {
+      pretty += object.toString();
+    } else if (typeof(object) == "string") {
+      pretty += "\"" + object + "\"";
+    }
+    else if (object == null) {
+      pretty += "null";
+    }
+    else if (object instanceof(Array)) {
+      if ( object.length > 0 ) {
+        if (embedded) { newline = true; }
+        content = "";
+        for (var i=0; i<object.length; i++) {
+          if (i !== 0) { content += ", "; }
+          content += pp(object[i], depth+1);
+        }
+        content = content.replace(/,\n\s*$/, "").replace(/^\s*/,"");
+        pretty += "[ " + content + " ]";
+      } else {
+        pretty += "[]";
+      }
+    }
+    else if (typeof(object) == "object") {
+      if ( object.toString() != "[object Object]" ) {
+        pretty += object.toString();
+      } else {
+        if ( Object.keys(object).length > 0 ){
+          if (embedded) { newline = true; }
+          content = "";
+          for (var key in object) {
+            content += spacer(depth + 1) + key.toString() + ": " + pp(object[key], depth+2, true) + ",\n";
+          }
+          content = content.replace(/,\n\s*$/, "").replace(/^\s*/,"");
+          pretty += "{\n" + spacer(depth + 1) + content + "\n" + spacer(depth) + "}";
+        } else {
+          pretty += "{}";
+        }
+      }
+    }
+    else {
+      pretty += object.toString();
+    }
+    return ((newline ? "\n" + spacer(depth) : "") + pretty);
+  }
 
   $scope.loadExample('hello');
-  $scope.$watch("mode", $scope.validate);
-  $scope.$watch("example.schema", $scope.validate);
-  $scope.$watch("example.data", $scope.validate);
 })
 
 ;

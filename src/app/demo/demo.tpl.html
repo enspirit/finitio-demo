@@ -22,17 +22,6 @@
               </label>
             </fieldset>
           </li>
-          <li class="navbar-form">
-            <div class="form-group">
-              <label class="fieldset-label">Mode:</label>
-              <label class="radio-inline">
-                <input ng-model="mode" type="radio" name="mode" value="validate"> Validate
-              </label>
-              <label class="radio-inline">
-                <input ng-model="mode" type="radio" name="mode" value="dress"> Dress
-              </label>
-            </div>
-          </li>
         </ul>
       </div>
       <div class="pull-right">
@@ -41,11 +30,13 @@
     </div>
   </div>
 </header>
+
 <script ng-bind="example.context"></script>
+
 <div ng-show="state == 'finitio'">
-  <div class='row-fluid' full-height="-300">
+  <div class='row-fluid' full-height="-365">
     <div class="col-md-6">
-      <div full-height="-300" ui-ace="{
+      <div full-height="-365" ui-ace="{
         useWrapMode : false,
         showGutter: true,
         theme:'clouds',
@@ -53,7 +44,7 @@
       }" ng-model="example.schema"></div>
     </div>
     <div class="col-md-6">
-      <div full-height="-300" ui-ace="{
+      <div full-height="-365" ui-ace="{
         useWrapMode : false,
         showGutter: true,
         theme:'clouds',
@@ -63,9 +54,24 @@
   </div>
   <div class='row-fluid'>
     <div class="col-md-12">
-      <pre id="try-feedback"
-           ng-class="{ 'alert-success': status=='success', 'alert-danger': status=='error' }"
-           class="alert">{{message}}</pre>
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#validating" role="tab" data-toggle="tab">Validating</a></li>
+        <li><a href="#coercing" role="tab" data-toggle="tab">Coercing</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class='row-fluid'>
+    <div class="col-md-12">
+      <div class="tab-content">
+        <div class="tab-pane active" id="validating">
+          <pre ng-class="{ 'alert-success': validationStatus=='success', 'alert-danger': validationStatus=='error' }"
+               class="alert">{{validationMessage}}</pre>
+        </div>
+        <div class="tab-pane" id="coercing">
+          <pre ng-class="{ 'alert-success': dressedStatus=='success', 'alert-danger': dressedStatus=='error' }"
+               class="alert">{{dressedMessage}}</pre>
+        </div>
+      </div>
     </div>
   </div>
 </div>
