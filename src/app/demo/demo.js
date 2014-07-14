@@ -18,26 +18,25 @@ angular.module( 'finitio.demo', [
 })
 
 .controller( 'DemoCtrl', function DemoController($scope, examples) {
+  $scope.state = 'finitio';
   $scope.mode = "validate";
-  $scope.schema = "";
-  $scope.data = "";
   $scope.status = "none";
   $scope.error = "";
   $scope.examples = examples;
+  $scope.example = {};
 
   $scope.loadExample = function(id){
     for (var i=0; i<$scope.examples.length; i++){
       var ex = $scope.examples[i];
       if (ex.id == id){
-        $scope.schema = ex.schema;
-        $scope.data = ex.data;
+        $scope.example = ex;
       }
     }
   };
 
   $scope.validate = function(){
-    var schema = $scope.schema,
-        data   = $scope.data,
+    var schema = $scope.example.schema,
+        data   = $scope.example.data,
         parsed = null,
         system = null,
         coerced = null,
@@ -79,8 +78,8 @@ angular.module( 'finitio.demo', [
 
   $scope.loadExample('hello');
   $scope.$watch("mode", $scope.validate);
-  $scope.$watch("schema", $scope.validate);
-  $scope.$watch("data", $scope.validate);
+  $scope.$watch("example.schema", $scope.validate);
+  $scope.$watch("example.data", $scope.validate);
 })
 
 ;

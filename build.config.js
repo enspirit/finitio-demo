@@ -39,7 +39,8 @@ module.exports = {
       'vendor/ace-builds/src-min-noconflict/mode-json.js',
       'vendor/ace-builds/src-min-noconflict/worker-json.js',
       'vendor/ace-builds/src-min-noconflict/mode-ruby.js',
-      'vendor/ace-builds/src-min-noconflict/mode-javascript.js'
+      'vendor/ace-builds/src-min-noconflict/mode-javascript.js',
+      'vendor/ace-builds/src-min-noconflict/worker-javascript.js'
     ]
   }
 };
