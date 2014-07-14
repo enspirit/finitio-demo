@@ -89,6 +89,12 @@ angular.module( 'finitio.demo', [
       label: "Dates ?",
       schema: "@import finitio/data\n\nDate\n",
       data: '"2015-07-15"'
+    },
+    {
+      id: "color",
+      label: "Color",
+      schema: "@import finitio/data\n\nColor = .Color\n  <rgb> [Integer]\n  <hex> String\n\nColor",
+      data: "[12, 13, 14]\n"
     }
   ];
 
@@ -111,7 +117,7 @@ angular.module( 'finitio.demo', [
         jstype = null,
         constructor = null;
     try {
-      system = Finitio.system(schema);
+      system = Finitio.system(schema, {JsTypes: { Color: Color }});
       try {
         parsed  = JSON.parse(data);
         coerced = system.dress(parsed);
