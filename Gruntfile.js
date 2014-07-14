@@ -18,6 +18,7 @@ module.exports = function ( grunt ) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-html2js');
+  grunt.loadNpmTasks('grunt-shell');
 
   /**
    * Load in our build configuration file.
@@ -501,6 +502,11 @@ module.exports = function ( grunt ) {
         tasks: [ 'less:build' ]
       },
 
+      examples: {
+        files: [ 'examples/**/*' ],
+        tasks: [ 'shell:examples' ]
+      },
+
       /**
        * When a JavaScript unit test file changes, we only want to lint it and
        * run the unit tests. We don't want to do any live reloading.
@@ -527,6 +533,15 @@ module.exports = function ( grunt ) {
         options: {
           livereload: false
         }
+      }
+    },
+
+    shell: {
+      examples: {
+        options: {
+          stderr: false
+        },
+        command: 'ruby examples/compile.rb > src/app/examples/examples.js'
       }
     }
   };
@@ -555,7 +570,7 @@ module.exports = function ( grunt ) {
     'clean', 'html2js', 'jshint', 'coffeelint', 'coffee', 'less:build',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
-    'karma:continuous' 
+    'karma:continuous', 'shell:examples'
   ]);
 
   /**

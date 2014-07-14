@@ -1,0 +1,3 @@
+@import finitio/data
+
+{ Integer( i | i>0 ) }

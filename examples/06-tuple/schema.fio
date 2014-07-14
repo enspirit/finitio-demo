@@ -1,0 +1,8 @@
+@import finitio/data
+
+Password = String( s | s.length >= 8 )
+
+{
+  name: String
+  password: Password
+}

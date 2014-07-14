@@ -1,0 +1,7 @@
+@import finitio/data
+
+Color = .Color
+  <rgb> [Integer]
+  <hex> String
+
+Color

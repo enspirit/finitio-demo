@@ -1,0 +1,8 @@
+@import finitio/data
+
+Talk = {
+  name: String
+  by: String
+}
+
+{Talk}
