@@ -33,6 +33,18 @@ angular.module( 'finitio.demo', [
     }
   };
 
+  (function(){
+    var ex = null;
+    $scope.dropdownEntries = [];
+    for (var i=0; i<$scope.examples.length; i++){
+      ex = $scope.examples[i];
+      if (ex.divider){
+        $scope.dropdownEntries.push({ id: "divider" });
+      }
+      $scope.dropdownEntries.push(ex);
+    }
+  })();
+
   // current state: finitio or javascript
   $scope.state = 'finitio';
 
