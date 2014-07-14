@@ -155,7 +155,6 @@ angular.module( 'finitio.demo', [
       $scope.undressedMessage = pp($scope.undressed);
       return true;
     } catch (ex) {
-      console.log(ex.stack);
       $scope.undressed = null;
       $scope.undressedStatus = "error";
       $scope.undressedMessage = (ex.explainTree && ex.explainTree()) || ex.message;
