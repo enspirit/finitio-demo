@@ -89,17 +89,18 @@ angular.module( 'finitio.demo', [
 
   function dress(){
     if ($scope.systemStatus == "error") {
-      $scope.validationStatus = "error";
-      $scope.validationMessage = $scope.systemMessage;
+      $scope.dressedStatus = "error";
+      $scope.dressedMessage = $scope.systemMessage;
     } else if ($scope.dataStatus == "error") {
-      $scope.validationStatus = "error";
-      $scope.validationMessage = $scope.dataMessage;
+      $scope.dressedStatus = "error";
+      $scope.dressedMessage = $scope.dataMessage;
     } else {
       try {
         $scope.dressed = $scope.system.dress($scope.data);
         $scope.dressedStatus = "success";
         $scope.dressedMessage = pp($scope.dressed);
       } catch (ex) {
+        $scope.dressed = null;
         $scope.dressedStatus = "error";
         $scope.dressedMessage = (ex.explainTree && ex.explainTree()) || ex.message;
       }
