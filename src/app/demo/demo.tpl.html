@@ -6,7 +6,7 @@
           <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Examples <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
-              <li ng-repeat="ex in examples" ng-class="{ divider: ex.id=='separator'}">
+              <li ng-repeat="ex in examples">
                 <a ng-click="loadExample(ex.id)">{{ex.label}}</a>
               </li>
             </ul>
@@ -55,6 +55,7 @@
       <ul class="nav nav-tabs" role="tablist">
         <li class="active"><a href="#validating" role="tab" data-toggle="tab">Validating</a></li>
         <li><a href="#coercing" role="tab" data-toggle="tab">Coercing</a></li>
+        <li><a href="#undressing" role="tab" data-toggle="tab">Undressing</a></li>
       </ul>
     </div>
   </div>
@@ -68,6 +69,10 @@
         <div class="tab-pane" id="coercing">
           <pre ng-class="{ 'alert-success': dressedStatus=='success', 'alert-danger': dressedStatus=='error' }"
                class="alert">{{dressedMessage}}</pre>
+        </div>
+        <div class="tab-pane" id="undressing">
+          <pre ng-class="{ 'alert-success': undressedStatus=='success', 'alert-danger': undressedStatus=='error' }"
+               class="alert">{{undressedMessage}}</pre>
         </div>
       </div>
     </div>

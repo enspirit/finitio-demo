@@ -4,4 +4,6 @@ Color = .Color
   <rgb> [Integer]
   <hex> String
 
-Color
+Output = [Color/hex]
+
+[Color]

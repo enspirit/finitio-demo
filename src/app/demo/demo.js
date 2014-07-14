@@ -97,8 +97,6 @@ angular.module( 'finitio.demo', [
       var fn = new Function("module", $scope.example.context);
       var module = { exports: {} };
       fn(module);
-      console.log(fn);
-      console.log(module);
       $scope.context = module.exports;
       $scope.contextStatus = "success";
       $scope.contextMessage = "Javascript context ok.";
@@ -127,6 +125,28 @@ angular.module( 'finitio.demo', [
       $scope.dressed = null;
       $scope.dressedStatus = "error";
       $scope.dressedMessage = (ex.explainTree && ex.explainTree()) || ex.message;
+      return false;
+    }
+  }
+
+  // Coerces data against main as soon as something changes
+  $scope.undressed = null;
+  $scope.undressedStatus = "error";
+  $scope.undressedMessage = "";
+
+  // Undress data
+  function undress(){
+    try {
+      var output = $scope.system.resolve('Output');
+      $scope.undressed = $scope.main.undress($scope.dressed, output.trueOne());
+      $scope.undressedStatus = "success";
+      $scope.undressedMessage = pp($scope.undressed);
+      return true;
+    } catch (ex) {
+      console.log(ex.stack);
+      $scope.undressed = null;
+      $scope.undressedStatus = "error";
+      $scope.undressedMessage = (ex.explainTree && ex.explainTree()) || ex.message;
       return false;
     }
   }
@@ -169,6 +189,7 @@ angular.module( 'finitio.demo', [
 
     dress();
     validate();
+    undress();
   }
   $scope.$watch("example.schema", run);
   $scope.$watch("example.data", run);
