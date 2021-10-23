@@ -1,6 +1,6 @@
 angular.module( 'finitio', [
   'templates-app',
-  'templates-common',
+  // 'templates-common',
   'ui.router',
   'finitio.demo'
 ])
