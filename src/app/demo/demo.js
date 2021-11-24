@@ -17,6 +17,12 @@ angular.module( 'finitio.demo', [
   });
 })
 
+.directive('finitioVersion', function() {
+  return {
+    template: 'finitio.js v' + Finitio.VERSION
+  };
+})
+
 .controller( 'DemoCtrl', function DemoController($scope, examples) {
 
   // examples and currently selected one
